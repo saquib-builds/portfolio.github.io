@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        AI Research Agent | Mohd Saquib Khan
+    </title>
+
+    <meta
+        name="description"
+        content="Case study of an AI Research Agent built with Python, OpenAI, Pydantic, web search, logging, and pytest."
+    >
+
+    <link
+        rel="stylesheet"
+        href="../style.css"
+    >
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+
+        <nav class="navbar container">
+
+            <a
+                href="../index.html"
+                class="logo"
+            >
+                Saquib<span>.</span>
+            </a>
+
+            <ul class="nav-links">
+
+                <li>
+                    <a href="../index.html#about">
+                        About
+                    </a>
+                </li>
+
+                <li>
+                    <a href="../index.html#projects">
+                        Projects
+                    </a>
+                </li>
+
+                <li>
+                    <a href="../index.html#skills">
+                        Skills
+                    </a>
+                </li>
+
+                <li>
+                    <a href="../index.html#contact">
+                        Contact
+                    </a>
+                </li>
+
+            </ul>
+
+            <button
+                class="menu-btn"
+                id="menu-btn"
+                aria-label="Open navigation"
+            >
+                ☰
+            </button>
+
+        </nav>
+
+    </header>
+
+
+    <main>
+
+        <!-- PROJECT HERO -->
+        <section class="project-hero">
+
+            <div class="container">
+
+                <a
+                    href="../index.html#projects"
+                    class="back-link"
+                >
+                    ← Back to Projects
+                </a>
+
+                <div class="project-hero-grid">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            PROJECT #01 · COMPLETE
+                        </p>
+
+                        <h1>
+                            AI Research Agent
+                        </h1>
+
+                        <p class="project-subtitle">
+                            A research-focused AI agent that creates
+                            structured research plans, searches the web,
+                            evaluates source quality, and produces
+                            evidence-based answers.
+                        </p>
+
+                        <div class="tech-stack project-tech">
+
+                            <span>Python</span>
+                            <span>OpenAI</span>
+                            <span>Web Search</span>
+                            <span>Pydantic</span>
+                            <span>Pytest</span>
+
+                        </div>
+
+                        <div class="hero-actions">
+
+                            <a
+                                href="https://github.com/YOUR-USERNAME/YOUR-REPOSITORY"
+                                target="_blank"
+                                class="btn btn-primary"
+                            >
+                                View Source Code
+                            </a>
+
+                            <a
+                                href="#architecture"
+                                class="btn btn-secondary"
+                            >
+                                View Architecture
+                            </a>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="project-summary-card">
+
+                        <div>
+
+                            <span>
+                                Project Type
+                            </span>
+
+                            <strong>
+                                AI Agent
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Architecture
+                            </span>
+
+                            <strong>
+                                Planner → Researcher
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Research
+                            </span>
+
+                            <strong>
+                                Real-Time Web Search
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Tests
+                            </span>
+
+                            <strong>
+                                12 Passing
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Status
+                            </span>
+
+                            <strong>
+                                Complete
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- PROBLEM -->
+        <section class="section section-alt">
+
+            <div class="container">
+
+                <p class="section-label">
+                    THE PROBLEM
+                </p>
+
+                <h2 class="section-title">
+                    Why I built this.
+                </h2>
+
+                <div class="case-grid">
+
+                    <div>
+
+                        <p>
+                            A normal chatbot can answer questions,
+                            but research-focused tasks require more than
+                            generating text from model knowledge.
+                        </p>
+
+                        <p>
+                            I wanted to build a system that could first
+                            understand a research request, break it into
+                            manageable research steps, gather current
+                            external information, evaluate evidence,
+                            and then synthesize the findings.
+                        </p>
+
+                    </div>
+
+                    <div class="highlight-card">
+
+                        <strong>
+                            Core Question
+                        </strong>
+
+                        <p>
+                            How can an LLM evolve from simply answering
+                            questions into an agent that plans research,
+                            uses tools, validates evidence, and produces
+                            reliable research outputs?
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- SOLUTION -->
+        <section class="section">
+
+            <div class="container">
+
+                <p class="section-label">
+                    THE SOLUTION
+                </p>
+
+                <h2 class="section-title">
+                    Planner → Researcher architecture.
+                </h2>
+
+                <div class="case-grid">
+
+                    <div>
+
+                        <h3>
+                            1. Research Planner
+                        </h3>
+
+                        <p>
+                            The planner receives the user's research
+                            question and creates a structured research plan.
+                        </p>
+
+                        <p>
+                            The output is validated using a Pydantic
+                            schema instead of relying on unrestricted
+                            free-form text.
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+                            2. Research Executor
+                        </h3>
+
+                        <p>
+                            The researcher receives the validated plan
+                            and uses web search to gather current
+                            external evidence.
+                        </p>
+
+                        <p>
+                            It follows source-quality rules and
+                            synthesizes the findings into a final
+                            research answer.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ARCHITECTURE -->
+        <section
+            class="section section-alt"
+            id="architecture"
+        >
+
+            <div class="container">
+
+                <p class="section-label">
+                    ARCHITECTURE
+                </p>
+
+                <h2 class="section-title">
+                    How the system works.
+                </h2>
+
+                <div class="architecture-card">
+
+                    <img
+                        src="../assets/images/research-agent-architecture.png"
+                        alt="AI Research Agent architecture diagram"
+                    >
+
+                </div>
+
+                <div class="architecture-text">
+
+                    <pre>
+User
+ ↓
+CLI
+ ↓
+Agent Orchestrator
+ ↓
+Planner
+ ↓
+Structured ResearchPlan
+ ↓
+Researcher
+ ↓
+Web Search
+ ↓
+Evidence Evaluation
+ ↓
+Final Research Answer
+                    </pre>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- FEATURES -->
+        <section class="section">
+
+            <div class="container">
+
+                <p class="section-label">
+                    CORE FEATURES
+                </p>
+
+                <h2 class="section-title">
+                    What the agent can do.
+                </h2>
+
+                <div class="features-grid">
+
+                    <div class="feature-card">
+
+                        <h3>
+                            Structured Planning
+                        </h3>
+
+                        <p>
+                            Converts a research request into a validated
+                            research objective and ordered research steps.
+                        </p>
+
+                    </div>
+
+
+                    <div class="feature-card">
+
+                        <h3>
+                            Real-Time Web Research
+                        </h3>
+
+                        <p>
+                            Uses web search to gather current external
+                            information instead of depending only on
+                            model memory.
+                        </p>
+
+                    </div>
+
+
+                    <div class="feature-card">
+
+                        <h3>
+                            Source Prioritization
+                        </h3>
+
+                        <p>
+                            Prefers government, regulatory, official,
+                            academic, and reputable research sources.
+                        </p>
+
+                    </div>
+
+
+                    <div class="feature-card">
+
+                        <h3>
+                            Structured Output
+                        </h3>
+
+                        <p>
+                            Uses Pydantic models so planner output can be
+                            reliably consumed by the researcher.
+                        </p>
+
+                    </div>
+
+
+                    <div class="feature-card">
+
+                        <h3>
+                            Error Handling
+                        </h3>
+
+                        <p>
+                            Handles authentication failures, rate limits,
+                            timeouts, network failures, and bad requests.
+                        </p>
+
+                    </div>
+
+
+                    <div class="feature-card">
+
+                        <h3>
+                            Automated Testing
+                        </h3>
+
+                        <p>
+                            Includes 12 pytest tests using mocked external
+                            dependencies to avoid unnecessary API calls.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- DEVELOPMENT JOURNEY -->
+        <section class="section section-alt">
+
+            <div class="container">
+
+                <p class="section-label">
+                    DEVELOPMENT JOURNEY
+                </p>
+
+                <h2 class="section-title">
+                    Built from first principles.
+                </h2>
+
+                <div class="version-grid">
+
+                    <div class="version-card">
+                        <span>V1</span>
+                        <h3>Rule-Based Logic</h3>
+                        <p>
+                            Started with simple Python conditions and
+                            deterministic routing.
+                        </p>
+                    </div>
+
+                    <div class="version-card">
+                        <span>V2</span>
+                        <h3>LLM Integration</h3>
+                        <p>
+                            Replaced hard-coded decision logic with
+                            model-based reasoning.
+                        </p>
+                    </div>
+
+                    <div class="version-card">
+                        <span>V3–V4</span>
+                        <h3>Tool Calling</h3>
+                        <p>
+                            Learned how LLMs request custom tools and
+                            how Python executes them.
+                        </p>
+                    </div>
+
+                    <div class="version-card">
+                        <span>V5–V7</span>
+                        <h3>Agent Loop</h3>
+                        <p>
+                            Added web search, tool-result handling,
+                            and iterative execution.
+                        </p>
+                    </div>
+
+                    <div class="version-card">
+                        <span>V8</span>
+                        <h3>Planning Agent</h3>
+                        <p>
+                            Separated research planning from research
+                            execution.
+                        </p>
+                    </div>
+
+                    <div class="version-card">
+                        <span>V9</span>
+                        <h3>Production Engineering</h3>
+                        <p>
+                            Added modular architecture, Pydantic,
+                            logging, error handling, testing, and
+                            evidence guardrails.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- TESTING -->
+        <section class="section">
+
+            <div class="container">
+
+                <p class="section-label">
+                    TESTING
+                </p>
+
+                <h2 class="section-title">
+                    12 automated tests passing.
+                </h2>
+
+                <div class="test-highlight">
+
+                    <div>
+
+                        <strong>
+                            12 / 12
+                        </strong>
+
+                        <span>
+                            Tests Passing
+                        </span>
+
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            pytest
+                        </strong>
+
+                        <span>
+                            Test Framework
+                        </span>
+
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            Mocked
+                        </strong>
+
+                        <span>
+                            External API Calls
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="code-block">
+
+<pre><code>python -m pytest -v
+
+12 passed in 1.15s</code></pre>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CHALLENGES -->
+        <section class="section section-alt">
+
+            <div class="container">
+
+                <p class="section-label">
+                    ENGINEERING CHALLENGES
+                </p>
+
+                <h2 class="section-title">
+                    Problems I had to solve.
+                </h2>
+
+                <div class="features-grid">
+
+                    <div class="feature-card">
+
+                        <h3>
+                            Repeated Tool Calls
+                        </h3>
+
+                        <p>
+                            The agent initially called the same calculator
+                            tool repeatedly because execution state was not
+                            being preserved correctly.
+                        </p>
+
+                    </div>
+
+
+                    <div class="feature-card">
+
+                        <h3>
+                            Over-Planning
+                        </h3>
+
+                        <p>
+                            Early planners created consulting-style plans
+                            involving interviews and multi-week work.
+                            Prompts were refined so plans remained
+                            executable by the agent.
+                        </p>
+
+                    </div>
+
+
+                    <div class="feature-card">
+
+                        <h3>
+                            Excessive Responses
+                        </h3>
+
+                        <p>
+                            Simple research questions initially produced
+                            unnecessarily large reports. Response depth
+                            was adjusted to match query complexity.
+                        </p>
+
+                    </div>
+
+
+                    <div class="feature-card">
+
+                        <h3>
+                            API Failures
+                        </h3>
+
+                        <p>
+                            Added targeted exception handling for invalid
+                            credentials, rate limits, timeouts, network
+                            issues, and malformed requests.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- LEARNINGS -->
+        <section class="section">
+
+            <div class="container">
+
+                <p class="section-label">
+                    WHAT I LEARNED
+                </p>
+
+                <h2 class="section-title">
+                    More than just prompting an LLM.
+                </h2>
+
+                <div class="learning-list">
+
+                    <div>
+                        <span>01</span>
+                        <p>
+                            How LLM tool/function calling works under the hood.
+                        </p>
+                    </div>
+
+                    <div>
+                        <span>02</span>
+                        <p>
+                            How to build an iterative agent execution loop.
+                        </p>
+                    </div>
+
+                    <div>
+                        <span>03</span>
+                        <p>
+                            How planning and execution can be separated into
+                            different components.
+                        </p>
+                    </div>
+
+                    <div>
+                        <span>04</span>
+                        <p>
+                            How structured outputs improve reliability between
+                            AI components.
+                        </p>
+                    </div>
+
+                    <div>
+                        <span>05</span>
+                        <p>
+                            Why logging, validation, error handling, and
+                            automated tests matter in AI applications.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- LIMITATIONS -->
+        <section class="section section-alt">
+
+            <div class="container">
+
+                <p class="section-label">
+                    LIMITATIONS
+                </p>
+
+                <h2 class="section-title">
+                    Current project scope.
+                </h2>
+
+                <div class="limitations">
+
+                    <p>
+                        This agent is intentionally optimized for
+                        research-intensive tasks rather than low-latency
+                        general conversation.
+                    </p>
+
+                    <ul>
+
+                        <li>
+                            Web research can increase latency and token usage.
+                        </li>
+
+                        <li>
+                            Public web sources can contain conflicting or
+                            incorrect information.
+                        </li>
+
+                        <li>
+                            The current interface is command-line based.
+                        </li>
+
+                        <li>
+                            The project does not currently persist research history.
+                        </li>
+
+                        <li>
+                            It is not designed for high-stakes professional advice.
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CTA -->
+        <section class="section project-cta">
+
+            <div class="container">
+
+                <p class="section-label">
+                    SOURCE CODE
+                </p>
+
+                <h2>
+                    Explore the complete project.
+                </h2>
+
+                <p>
+                    The repository includes the final modular application,
+                    automated tests, learning notes, and earlier versions
+                    showing how the agent evolved from V1 to V9.
+                </p>
+
+                <a
+                    href="https://github.com/YOUR-USERNAME/YOUR-REPOSITORY"
+                    target="_blank"
+                    class="btn btn-primary"
+                >
+                    View on GitHub
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        <div class="container footer-content">
+
+            <p>
+                © <span id="year"></span> Mohd Saquib Khan
+            </p>
+
+            <a href="../index.html">
+                Back to Portfolio
+            </a>
+
+        </div>
+
+    </footer>
+
+
+    <script src="../script.js"></script>
+
+</body>
+
+</html>
