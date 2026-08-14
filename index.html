@@ -202,6 +202,61 @@
         </div>
       </div>
     </section>
+
+    <section class="section" id="portfolio-stats" aria-labelledby="portfolio-stats-title">
+      <div class="container">
+        <div class="section-heading reveal">
+          <div class="section-index"><span>07</span><p>PORTFOLIO STATS</p></div>
+          <h2 id="portfolio-stats-title">A small signal of the work reaching people.</h2>
+          <span>View the current local counters and access the latest resume.</span>
+        </div>
+
+        <section class="utility-strip">
+            <div class="container utility-row">
+
+                <div class="utility-stat">
+                <span class="utility-label">Site views</span>
+                <strong id="site-view-count">0</strong>
+            </div>
+
+            <div class="utility-stat">
+            <span class="utility-label">Resume downloads</span>
+            <strong id="resume-download-count">0</strong>
+            </div>
+
+            <div class="resume-utility">
+            <span id="resume-file-name">No resume uploaded yet</span>
+
+            <label class="utility-action">
+            <span>Upload resume</span>
+            <input
+                type="file"
+                id="resume-upload"
+                accept=".pdf,.doc,.docx"
+                hidden
+                />
+            </label>
+
+            <button
+                id="resume-download-btn"
+                class="utility-action"
+                type="button"
+                disabled
+            >Download
+        </button>
+    </div>
+
+  </div>
+
+  <p
+    id="resume-status"
+    class="utility-status"
+    aria-live="polite"
+  ></p>
+</section>
+      </div>
+    </section>
+
   </main>
 
   <footer>
@@ -212,5 +267,95 @@
   </footer>
 
   <script src="script.js"></script>
+  <script>
+    (function () {
+      const VIEW_KEY = 'msk_portfolio_views';
+      const DOWNLOAD_KEY = 'msk_resume_downloads';
+      const RESUME_DATA_KEY = 'msk_resume_data';
+      const RESUME_NAME_KEY = 'msk_resume_name';
+      const MAX_RESUME_BYTES = 3 * 1024 * 1024;
+
+      const viewEl = document.getElementById('site-view-count');
+      const downloadEl = document.getElementById('resume-download-count');
+      const uploadEl = document.getElementById('resume-upload');
+      const downloadBtn = document.getElementById('resume-download-btn');
+      const fileNameEl = document.getElementById('resume-file-name');
+      const statusEl = document.getElementById('resume-status');
+
+      const views = Number(localStorage.getItem(VIEW_KEY) || 0) + 1;
+      localStorage.setItem(VIEW_KEY, String(views));
+      viewEl.textContent = views.toLocaleString();
+
+      function getDownloads() {
+        return Number(localStorage.getItem(DOWNLOAD_KEY) || 0);
+      }
+
+      function renderResumeState() {
+        const savedData = localStorage.getItem(RESUME_DATA_KEY);
+        const savedName = localStorage.getItem(RESUME_NAME_KEY);
+        downloadEl.textContent = getDownloads().toLocaleString();
+
+        if (savedData && savedName) {
+          fileNameEl.textContent = savedName;
+          downloadBtn.disabled = false;
+        } else {
+          fileNameEl.textContent = 'No resume uploaded yet';
+          downloadBtn.disabled = true;
+        }
+      }
+
+      uploadEl.addEventListener('change', function () {
+        const file = uploadEl.files && uploadEl.files[0];
+        if (!file) return;
+
+        if (file.size > MAX_RESUME_BYTES) {
+          statusEl.textContent = 'Resume is too large. Please choose a file up to 3 MB.';
+          uploadEl.value = '';
+          return;
+        }
+
+        const allowed = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+        if (file.type && !allowed.includes(file.type)) {
+          statusEl.textContent = 'Please upload a PDF, DOC, or DOCX file.';
+          uploadEl.value = '';
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function () {
+          try {
+            localStorage.setItem(RESUME_DATA_KEY, reader.result);
+            localStorage.setItem(RESUME_NAME_KEY, file.name);
+            statusEl.textContent = 'Resume saved in this browser. The download button is ready.';
+            renderResumeState();
+          } catch (error) {
+            statusEl.textContent = 'Could not save this file in browser storage. Try a smaller file.';
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+
+      downloadBtn.addEventListener('click', function () {
+        const data = localStorage.getItem(RESUME_DATA_KEY);
+        const name = localStorage.getItem(RESUME_NAME_KEY) || 'Mohammad-Saquib-Khan-Resume.pdf';
+        if (!data) return;
+
+        const link = document.createElement('a');
+        link.href = data;
+        link.download = name;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        const nextCount = getDownloads() + 1;
+        localStorage.setItem(DOWNLOAD_KEY, String(nextCount));
+        downloadEl.textContent = nextCount.toLocaleString();
+        statusEl.textContent = 'Resume downloaded.';
+      });
+
+      renderResumeState();
+    })();
+  </script>
+
 </body>
 </html>

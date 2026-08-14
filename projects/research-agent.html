@@ -1,894 +1,241 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0d0f10" />
+  <meta name="description" content="Case study: AI Research Agent by Mohammad Saquib Khan — planning, web research, evidence evaluation, structured outputs, testing, and modular architecture." />
+  <title>AI Research Agent | Mohammad Saquib Khan</title>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+  <link rel="stylesheet" href="../style.css" />
 
-    <title>
-        AI Research Agent | Mohd Saquib Khan
-    </title>
-
-    <meta
-        name="description"
-        content="Case study of an AI Research Agent built with Python, OpenAI, Pydantic, web search, logging, and pytest."
-    >
-
-    <link
-        rel="stylesheet"
-        href="../style.css"
-    >
+  <style>
+    .case-hero{min-height:100svh;display:flex;align-items:stretch;padding:68px 0 0;background:var(--dark);color:var(--dark-text)}
+    .case-hero-inner{min-height:calc(100svh - 68px);display:flex;flex-direction:column;padding-top:clamp(34px,5vw,58px);padding-bottom:28px}
+    .case-back{color:var(--accent-pale);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase}
+    .case-title-wrap{flex:1;display:flex;flex-direction:column;justify-content:center}
+    .case-index{color:var(--accent-pale);font-size:.68rem;letter-spacing:.16em;margin-bottom:16px}
+    .case-hero h1{max-width:1100px;font-size:clamp(4rem,10vw,10rem);line-height:.82;letter-spacing:-.075em;font-weight:900}
+    .case-hero h1 span{display:block;color:var(--accent);font-family:Georgia,"Times New Roman",serif;font-style:italic;font-weight:400;letter-spacing:-.055em}
+    .case-lead{max-width:730px;margin-top:36px;color:var(--dark-muted);font-size:clamp(1rem,1.7vw,1.17rem)}
+    .case-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--dark-line);margin-top:44px}
+    .case-meta div{padding:18px 20px 0 0}.case-meta span{display:block;color:var(--dark-muted);font-size:.64rem;letter-spacing:.11em;text-transform:uppercase}
+    .case-meta strong{display:block;margin-top:5px;font-size:.88rem}
+    .case-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+    .case-section-title{max-width:930px;font-size:clamp(2.6rem,5.6vw,5.8rem);line-height:.96;letter-spacing:-.06em}
+    .case-section-title em{color:var(--accent);font-family:Georgia,"Times New Roman",serif;font-weight:400}
+    .case-copy{max-width:820px;color:var(--muted);font-size:1rem}.case-copy p+p{margin-top:18px}
+    .problem-grid,.solution-grid,.learning-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(28px,6vw,76px);margin-top:50px}
+    .editorial-block{padding-top:18px;border-top:1px solid var(--line)}.editorial-block span{color:var(--accent);font-size:.68rem;letter-spacing:.12em}
+    .editorial-block h3{margin-top:12px;font-size:clamp(1.4rem,2.2vw,2rem);letter-spacing:-.04em}.editorial-block p{margin-top:10px;color:var(--muted)}
+    .architecture-section{background:var(--accent);color:#1c100c}.architecture-section .section-index{color:#37160c}
+    .architecture-map{margin-top:58px;border-top:1px solid rgba(28,16,12,.25);border-left:1px solid rgba(28,16,12,.25)}
+    .arch-row{display:grid;grid-template-columns:.28fr .72fr 1.4fr;align-items:start;border-bottom:1px solid rgba(28,16,12,.25)}
+    .arch-row>div{padding:22px;min-height:100%;border-right:1px solid rgba(28,16,12,.25)}.arch-row span{font-size:.66rem;letter-spacing:.12em}
+    .arch-row h3{font-size:1.05rem}.arch-row p{color:rgba(28,16,12,.72);font-size:.9rem}
+    .architecture-flow{margin-top:38px;font-family:"Courier New",monospace;font-size:clamp(.78rem,1.4vw,.95rem);line-height:1.9;white-space:pre-wrap}
+    .evolution-section{background:var(--dark);color:var(--dark-text)}.evolution-track{margin-top:56px;border-top:1px solid var(--dark-line)}
+    .evolution-item{display:grid;grid-template-columns:.18fr .58fr 1.24fr;gap:20px;padding:24px 0;border-bottom:1px solid var(--dark-line)}
+    .evolution-item>span{color:var(--accent-pale);font-size:.7rem;letter-spacing:.12em}.evolution-item h3{font-size:1rem}.evolution-item p{color:var(--dark-muted);font-size:.9rem}
+    .quality-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line);margin-top:54px}
+    .quality-card{min-height:210px;padding:24px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.quality-card span{color:var(--accent);font-size:.66rem;letter-spacing:.13em}
+    .quality-card strong{display:block;margin-top:18px;font-size:clamp(1.55rem,2.7vw,2.3rem);letter-spacing:-.04em}.quality-card p{margin-top:9px;color:var(--muted);font-size:.88rem}
+    .test-band{margin-top:54px;padding:clamp(28px,5vw,48px);background:var(--paper);border:1px solid var(--line)}.test-band-top{display:flex;align-items:end;justify-content:space-between;gap:30px}
+    .test-band strong{font-size:clamp(3rem,7vw,6rem);line-height:.9;letter-spacing:-.06em}.test-band span{color:var(--accent);font-size:.7rem;letter-spacing:.12em}
+    .test-code{margin-top:24px;padding-top:20px;border-top:1px solid var(--line);font-family:"Courier New",monospace;color:var(--muted);font-size:.82rem;white-space:pre-line}
+    .lessons-section{background:var(--paper)}.learning-grid .editorial-block{min-height:180px}
+    .case-cta{background:var(--dark);color:var(--dark-text)}.case-cta h2{max-width:1000px;font-size:clamp(4rem,10vw,9.5rem);line-height:.8;letter-spacing:-.075em}
+    .case-cta h2 span{display:block;color:var(--accent);font-family:Georgia,"Times New Roman",serif;font-style:italic;font-weight:400}.case-cta p{max-width:640px;margin-top:34px;color:var(--dark-muted)}
+    .case-footer{background:var(--dark)}
+    @media(max-width:900px){.case-meta{grid-template-columns:repeat(2,1fr)}.problem-grid,.solution-grid,.learning-grid,.quality-grid{grid-template-columns:1fr 1fr}.evolution-item{grid-template-columns:.2fr .8fr}.evolution-item p{grid-column:2}.arch-row{grid-template-columns:.25fr .75fr}.arch-row>div:last-child{grid-column:1/-1}}
+    @media(max-width:650px){.case-hero h1{font-size:clamp(4rem,21vw,7.5rem)}.case-meta,.problem-grid,.solution-grid,.learning-grid,.quality-grid{grid-template-columns:1fr}.case-actions{flex-direction:column}.case-actions .motion-btn{width:100%}.arch-row{grid-template-columns:1fr}.arch-row>div:last-child{grid-column:auto}.evolution-item{grid-template-columns:1fr}.evolution-item p{grid-column:auto}.test-band-top{flex-direction:column;align-items:flex-start}}
+  </style>
 </head>
 
 <body>
+  <div class="scroll-progress" aria-hidden="true"><span id="scroll-progress-bar"></span></div>
 
-    <!-- HEADER -->
-    <header class="header">
+  <header class="site-header">
+    <nav class="nav container" aria-label="Primary navigation">
+      <a class="brand" href="../index.html"><span class="brand-index">MSK</span><span class="brand-name">Mohammad Saquib Khan</span></a>
+      <button class="menu-btn" id="menu-btn" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span></button>
+      <ul class="nav-links">
+        <li><a href="../index.html#story">Story</a></li>
+        <li><a href="../index.html#work">Work</a></li>
+        <li><a href="../index.html#now">Now</a></li>
+        <li><a href="../index.html#notes">Notes</a></li>
+        <li><a class="nav-connect" href="../index.html#contact"><span>Connect</span></a></li>
+      </ul>
+    </nav>
+  </header>
 
-        <nav class="navbar container">
+  <main>
+    <section class="case-hero">
+      <div class="container case-hero-inner">
+        <a class="case-back" href="../index.html#work">← BACK TO SELECTED WORK</a>
+        <div class="case-title-wrap">
+          <p class="case-index">CASE STUDY / 001</p>
+          <h1>AI RESEARCH <span>AGENT</span></h1>
+          <p class="case-lead">A research-focused AI system built from first principles — evolving from rule-based logic into a modular Planner → Researcher architecture with live web research, structured outputs, evidence guardrails, logging, and automated testing.</p>
+          <div class="case-actions">
+            <a class="motion-btn" href="https://github.com/saquib-builds/ai-research-agent" target="_blank" rel="noopener noreferrer"><span>Repository ↗</span></a>
+            <a class="motion-btn" href="#architecture"><span>Architecture</span></a>
+          </div>
+        </div>
+        <div class="case-meta">
+          <div><span>Status</span><strong>Complete</strong></div>
+          <div><span>Architecture</span><strong>Planner → Researcher</strong></div>
+          <div><span>Testing</span><strong>12 / 12 passing</strong></div>
+          <div><span>Research</span><strong>Live web search</strong></div>
+        </div>
+      </div>
+    </section>
 
-            <a
-                href="../index.html"
-                class="logo"
-            >
-                Saquib<span>.</span>
-            </a>
-
-            <ul class="nav-links">
-
-                <li>
-                    <a href="../index.html#about">
-                        About
-                    </a>
-                </li>
-
-                <li>
-                    <a href="../index.html#projects">
-                        Projects
-                    </a>
-                </li>
-
-                <li>
-                    <a href="../index.html#skills">
-                        Skills
-                    </a>
-                </li>
-
-                <li>
-                    <a href="../index.html#contact">
-                        Contact
-                    </a>
-                </li>
-
-            </ul>
-
-            <button
-                class="menu-btn"
-                id="menu-btn"
-                aria-label="Open navigation"
-            >
-                ☰
-            </button>
-
-        </nav>
-
-    </header>
-
-
-    <main>
-
-        <!-- PROJECT HERO -->
-        <section class="project-hero">
-
-            <div class="container">
-
-                <a
-                    href="../index.html#projects"
-                    class="back-link"
-                >
-                    ← Back to Projects
-                </a>
-
-                <div class="project-hero-grid">
-
-                    <div>
-
-                        <p class="eyebrow">
-                            PROJECT #01 · COMPLETE
-                        </p>
-
-                        <h1>
-                            AI Research Agent
-                        </h1>
-
-                        <p class="project-subtitle">
-                            A research-focused AI agent that creates
-                            structured research plans, searches the web,
-                            evaluates source quality, and produces
-                            evidence-based answers.
-                        </p>
-
-                        <div class="tech-stack project-tech">
-
-                            <span>Python</span>
-                            <span>OpenAI</span>
-                            <span>Web Search</span>
-                            <span>Pydantic</span>
-                            <span>Pytest</span>
-
-                        </div>
-
-                        <div class="hero-actions">
-
-                            <a
-                                href="https://github.com/YOUR-USERNAME/YOUR-REPOSITORY"
-                                target="_blank"
-                                class="btn btn-primary"
-                            >
-                                View Source Code
-                            </a>
-
-                            <a
-                                href="#architecture"
-                                class="btn btn-secondary"
-                            >
-                                View Architecture
-                            </a>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="project-summary-card">
-
-                        <div>
-
-                            <span>
-                                Project Type
-                            </span>
-
-                            <strong>
-                                AI Agent
-                            </strong>
-
-                        </div>
-
-
-                        <div>
-
-                            <span>
-                                Architecture
-                            </span>
-
-                            <strong>
-                                Planner → Researcher
-                            </strong>
-
-                        </div>
-
-
-                        <div>
-
-                            <span>
-                                Research
-                            </span>
-
-                            <strong>
-                                Real-Time Web Search
-                            </strong>
-
-                        </div>
-
-
-                        <div>
-
-                            <span>
-                                Tests
-                            </span>
-
-                            <strong>
-                                12 Passing
-                            </strong>
-
-                        </div>
-
-
-                        <div>
-
-                            <span>
-                                Status
-                            </span>
-
-                            <strong>
-                                Complete
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
+    <section class="section">
+      <div class="container editorial-grid">
+        <div class="section-index reveal"><span>01</span><p>THE PROBLEM</p></div>
+        <div>
+          <h2 class="case-section-title reveal">A chatbot answers. <em>A research agent investigates.</em></h2>
+          <div class="problem-grid">
+            <div class="case-copy reveal">
+              <p>I wanted to understand what changes when an LLM stops being the whole application and becomes one component inside a larger system.</p>
+              <p>Research requires current information, planning, tool use, evidence handling, source judgment, and a way to continue after external tools return results.</p>
             </div>
-
-        </section>
-
-
-        <!-- PROBLEM -->
-        <section class="section section-alt">
-
-            <div class="container">
-
-                <p class="section-label">
-                    THE PROBLEM
-                </p>
-
-                <h2 class="section-title">
-                    Why I built this.
-                </h2>
-
-                <div class="case-grid">
-
-                    <div>
-
-                        <p>
-                            A normal chatbot can answer questions,
-                            but research-focused tasks require more than
-                            generating text from model knowledge.
-                        </p>
-
-                        <p>
-                            I wanted to build a system that could first
-                            understand a research request, break it into
-                            manageable research steps, gather current
-                            external information, evaluate evidence,
-                            and then synthesize the findings.
-                        </p>
-
-                    </div>
-
-                    <div class="highlight-card">
-
-                        <strong>
-                            Core Question
-                        </strong>
-
-                        <p>
-                            How can an LLM evolve from simply answering
-                            questions into an agent that plans research,
-                            uses tools, validates evidence, and produces
-                            reliable research outputs?
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- SOLUTION -->
-        <section class="section">
-
-            <div class="container">
-
-                <p class="section-label">
-                    THE SOLUTION
-                </p>
-
-                <h2 class="section-title">
-                    Planner → Researcher architecture.
-                </h2>
-
-                <div class="case-grid">
-
-                    <div>
-
-                        <h3>
-                            1. Research Planner
-                        </h3>
-
-                        <p>
-                            The planner receives the user's research
-                            question and creates a structured research plan.
-                        </p>
-
-                        <p>
-                            The output is validated using a Pydantic
-                            schema instead of relying on unrestricted
-                            free-form text.
-                        </p>
-
-                    </div>
-
-
-                    <div>
-
-                        <h3>
-                            2. Research Executor
-                        </h3>
-
-                        <p>
-                            The researcher receives the validated plan
-                            and uses web search to gather current
-                            external evidence.
-                        </p>
-
-                        <p>
-                            It follows source-quality rules and
-                            synthesizes the findings into a final
-                            research answer.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ARCHITECTURE -->
-        <section
-            class="section section-alt"
-            id="architecture"
-        >
-
-            <div class="container">
-
-                <p class="section-label">
-                    ARCHITECTURE
-                </p>
-
-                <h2 class="section-title">
-                    How the system works.
-                </h2>
-
-                <div class="architecture-card">
-
-                    <img
-                        src="../assets/images/research-agent-architecture.png"
-                        alt="AI Research Agent architecture diagram"
-                    >
-
-                </div>
-
-                <div class="architecture-text">
-
-                    <pre>
-User
- ↓
-CLI
- ↓
-Agent Orchestrator
- ↓
-Planner
- ↓
-Structured ResearchPlan
- ↓
-Researcher
- ↓
-Web Search
- ↓
-Evidence Evaluation
- ↓
-Final Research Answer
-                    </pre>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- FEATURES -->
-        <section class="section">
-
-            <div class="container">
-
-                <p class="section-label">
-                    CORE FEATURES
-                </p>
-
-                <h2 class="section-title">
-                    What the agent can do.
-                </h2>
-
-                <div class="features-grid">
-
-                    <div class="feature-card">
-
-                        <h3>
-                            Structured Planning
-                        </h3>
-
-                        <p>
-                            Converts a research request into a validated
-                            research objective and ordered research steps.
-                        </p>
-
-                    </div>
-
-
-                    <div class="feature-card">
-
-                        <h3>
-                            Real-Time Web Research
-                        </h3>
-
-                        <p>
-                            Uses web search to gather current external
-                            information instead of depending only on
-                            model memory.
-                        </p>
-
-                    </div>
-
-
-                    <div class="feature-card">
-
-                        <h3>
-                            Source Prioritization
-                        </h3>
-
-                        <p>
-                            Prefers government, regulatory, official,
-                            academic, and reputable research sources.
-                        </p>
-
-                    </div>
-
-
-                    <div class="feature-card">
-
-                        <h3>
-                            Structured Output
-                        </h3>
-
-                        <p>
-                            Uses Pydantic models so planner output can be
-                            reliably consumed by the researcher.
-                        </p>
-
-                    </div>
-
-
-                    <div class="feature-card">
-
-                        <h3>
-                            Error Handling
-                        </h3>
-
-                        <p>
-                            Handles authentication failures, rate limits,
-                            timeouts, network failures, and bad requests.
-                        </p>
-
-                    </div>
-
-
-                    <div class="feature-card">
-
-                        <h3>
-                            Automated Testing
-                        </h3>
-
-                        <p>
-                            Includes 12 pytest tests using mocked external
-                            dependencies to avoid unnecessary API calls.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- DEVELOPMENT JOURNEY -->
-        <section class="section section-alt">
-
-            <div class="container">
-
-                <p class="section-label">
-                    DEVELOPMENT JOURNEY
-                </p>
-
-                <h2 class="section-title">
-                    Built from first principles.
-                </h2>
-
-                <div class="version-grid">
-
-                    <div class="version-card">
-                        <span>V1</span>
-                        <h3>Rule-Based Logic</h3>
-                        <p>
-                            Started with simple Python conditions and
-                            deterministic routing.
-                        </p>
-                    </div>
-
-                    <div class="version-card">
-                        <span>V2</span>
-                        <h3>LLM Integration</h3>
-                        <p>
-                            Replaced hard-coded decision logic with
-                            model-based reasoning.
-                        </p>
-                    </div>
-
-                    <div class="version-card">
-                        <span>V3–V4</span>
-                        <h3>Tool Calling</h3>
-                        <p>
-                            Learned how LLMs request custom tools and
-                            how Python executes them.
-                        </p>
-                    </div>
-
-                    <div class="version-card">
-                        <span>V5–V7</span>
-                        <h3>Agent Loop</h3>
-                        <p>
-                            Added web search, tool-result handling,
-                            and iterative execution.
-                        </p>
-                    </div>
-
-                    <div class="version-card">
-                        <span>V8</span>
-                        <h3>Planning Agent</h3>
-                        <p>
-                            Separated research planning from research
-                            execution.
-                        </p>
-                    </div>
-
-                    <div class="version-card">
-                        <span>V9</span>
-                        <h3>Production Engineering</h3>
-                        <p>
-                            Added modular architecture, Pydantic,
-                            logging, error handling, testing, and
-                            evidence guardrails.
-                        </p>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- TESTING -->
-        <section class="section">
-
-            <div class="container">
-
-                <p class="section-label">
-                    TESTING
-                </p>
-
-                <h2 class="section-title">
-                    12 automated tests passing.
-                </h2>
-
-                <div class="test-highlight">
-
-                    <div>
-
-                        <strong>
-                            12 / 12
-                        </strong>
-
-                        <span>
-                            Tests Passing
-                        </span>
-
-                    </div>
-
-
-                    <div>
-
-                        <strong>
-                            pytest
-                        </strong>
-
-                        <span>
-                            Test Framework
-                        </span>
-
-                    </div>
-
-
-                    <div>
-
-                        <strong>
-                            Mocked
-                        </strong>
-
-                        <span>
-                            External API Calls
-                        </span>
-
-                    </div>
-
-                </div>
-
-                <div class="code-block">
-
-<pre><code>python -m pytest -v
-
-12 passed in 1.15s</code></pre>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- CHALLENGES -->
-        <section class="section section-alt">
-
-            <div class="container">
-
-                <p class="section-label">
-                    ENGINEERING CHALLENGES
-                </p>
-
-                <h2 class="section-title">
-                    Problems I had to solve.
-                </h2>
-
-                <div class="features-grid">
-
-                    <div class="feature-card">
-
-                        <h3>
-                            Repeated Tool Calls
-                        </h3>
-
-                        <p>
-                            The agent initially called the same calculator
-                            tool repeatedly because execution state was not
-                            being preserved correctly.
-                        </p>
-
-                    </div>
-
-
-                    <div class="feature-card">
-
-                        <h3>
-                            Over-Planning
-                        </h3>
-
-                        <p>
-                            Early planners created consulting-style plans
-                            involving interviews and multi-week work.
-                            Prompts were refined so plans remained
-                            executable by the agent.
-                        </p>
-
-                    </div>
-
-
-                    <div class="feature-card">
-
-                        <h3>
-                            Excessive Responses
-                        </h3>
-
-                        <p>
-                            Simple research questions initially produced
-                            unnecessarily large reports. Response depth
-                            was adjusted to match query complexity.
-                        </p>
-
-                    </div>
-
-
-                    <div class="feature-card">
-
-                        <h3>
-                            API Failures
-                        </h3>
-
-                        <p>
-                            Added targeted exception handling for invalid
-                            credentials, rate limits, timeouts, network
-                            issues, and malformed requests.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- LEARNINGS -->
-        <section class="section">
-
-            <div class="container">
-
-                <p class="section-label">
-                    WHAT I LEARNED
-                </p>
-
-                <h2 class="section-title">
-                    More than just prompting an LLM.
-                </h2>
-
-                <div class="learning-list">
-
-                    <div>
-                        <span>01</span>
-                        <p>
-                            How LLM tool/function calling works under the hood.
-                        </p>
-                    </div>
-
-                    <div>
-                        <span>02</span>
-                        <p>
-                            How to build an iterative agent execution loop.
-                        </p>
-                    </div>
-
-                    <div>
-                        <span>03</span>
-                        <p>
-                            How planning and execution can be separated into
-                            different components.
-                        </p>
-                    </div>
-
-                    <div>
-                        <span>04</span>
-                        <p>
-                            How structured outputs improve reliability between
-                            AI components.
-                        </p>
-                    </div>
-
-                    <div>
-                        <span>05</span>
-                        <p>
-                            Why logging, validation, error handling, and
-                            automated tests matter in AI applications.
-                        </p>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- LIMITATIONS -->
-        <section class="section section-alt">
-
-            <div class="container">
-
-                <p class="section-label">
-                    LIMITATIONS
-                </p>
-
-                <h2 class="section-title">
-                    Current project scope.
-                </h2>
-
-                <div class="limitations">
-
-                    <p>
-                        This agent is intentionally optimized for
-                        research-intensive tasks rather than low-latency
-                        general conversation.
-                    </p>
-
-                    <ul>
-
-                        <li>
-                            Web research can increase latency and token usage.
-                        </li>
-
-                        <li>
-                            Public web sources can contain conflicting or
-                            incorrect information.
-                        </li>
-
-                        <li>
-                            The current interface is command-line based.
-                        </li>
-
-                        <li>
-                            The project does not currently persist research history.
-                        </li>
-
-                        <li>
-                            It is not designed for high-stakes professional advice.
-                        </li>
-
-                    </ul>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- CTA -->
-        <section class="section project-cta">
-
-            <div class="container">
-
-                <p class="section-label">
-                    SOURCE CODE
-                </p>
-
-                <h2>
-                    Explore the complete project.
-                </h2>
-
-                <p>
-                    The repository includes the final modular application,
-                    automated tests, learning notes, and earlier versions
-                    showing how the agent evolved from V1 to V9.
-                </p>
-
-                <a
-                    href="https://github.com/YOUR-USERNAME/YOUR-REPOSITORY"
-                    target="_blank"
-                    class="btn btn-primary"
-                >
-                    View on GitHub
-                </a>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <footer>
-
-        <div class="container footer-content">
-
-            <p>
-                © <span id="year"></span> Mohd Saquib Khan
-            </p>
-
-            <a href="../index.html">
-                Back to Portfolio
-            </a>
-
+            <div class="editorial-block reveal"><span>CORE QUESTION</span><h3>How do you move from “ask the model” to a system that can plan, research, validate, and synthesize?</h3></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container editorial-grid">
+        <div class="section-index reveal"><span>02</span><p>THE SOLUTION</p></div>
+        <div>
+          <h2 class="case-section-title reveal">Separate thinking about <em>what to research</em> from actually researching it.</h2>
+          <div class="solution-grid">
+            <div class="editorial-block reveal"><span>PLANNER</span><h3>Creates a structured research objective and ordered steps.</h3><p>Pydantic gives the planner output a reliable schema instead of leaving downstream code to interpret free-form text.</p></div>
+            <div class="editorial-block reveal"><span>RESEARCHER</span><h3>Executes the plan using current external information.</h3><p>The researcher uses web search, prioritizes stronger sources, and synthesizes evidence into the final answer.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section architecture-section" id="architecture">
+      <div class="container">
+        <div class="section-heading reveal">
+          <div class="section-index"><span>03</span><p>ARCHITECTURE</p></div>
+          <h2>One question. Two responsibilities.</h2>
+          <p>The final design keeps orchestration, planning, research, validation, and configuration separate.</p>
         </div>
 
-    </footer>
+        <div class="architecture-map reveal">
+          <div class="arch-row"><div><span>01</span></div><div><h3>User / CLI</h3></div><div><p>Accepts the research request and displays the final result.</p></div></div>
+          <div class="arch-row"><div><span>02</span></div><div><h3>Agent Orchestrator</h3></div><div><p>Coordinates the planner and researcher without owning their internal logic.</p></div></div>
+          <div class="arch-row"><div><span>03</span></div><div><h3>Planner</h3></div><div><p>Produces a validated ResearchPlan with an objective and ordered steps.</p></div></div>
+          <div class="arch-row"><div><span>04</span></div><div><h3>Researcher</h3></div><div><p>Executes the plan with web search and evidence-quality instructions.</p></div></div>
+          <div class="arch-row"><div><span>05</span></div><div><h3>Supporting Layer</h3></div><div><p>Configuration, logging, exception handling, prompts, schemas, and tests.</p></div></div>
+        </div>
 
+        <pre class="architecture-flow reveal">USER
+  ↓
+CLI
+  ↓
+AGENT ORCHESTRATOR
+  ↓
+PLANNER
+  ↓
+PYDANTIC RESEARCH PLAN
+  ↓
+RESEARCHER
+  ↓
+WEB SEARCH
+  ↓
+EVIDENCE EVALUATION
+  ↓
+FINAL RESEARCH ANSWER</pre>
+      </div>
+    </section>
 
-    <script src="../script.js"></script>
+    <section class="section evolution-section">
+      <div class="container editorial-grid">
+        <div class="section-index light-index reveal"><span>04</span><p>EVOLUTION</p></div>
+        <div>
+          <h2 class="case-section-title reveal">I didn’t start with the final architecture. <em>I earned it version by version.</em></h2>
+          <div class="evolution-track">
+            <div class="evolution-item reveal"><span>V1</span><h3>Rule-based research</h3><p>Simple Python conditions taught me deterministic routing and basic control flow.</p></div>
+            <div class="evolution-item reveal"><span>V2</span><h3>LLM integration</h3><p>Decisions moved from fixed rules into model-generated reasoning.</p></div>
+            <div class="evolution-item reveal"><span>V3–V4</span><h3>Tools & function calling</h3><p>I learned that a model can request a tool, but application code still has to execute it.</p></div>
+            <div class="evolution-item reveal"><span>V5–V7</span><h3>Agent loop + web research</h3><p>Tool results were returned to the model and the loop continued until a final answer emerged.</p></div>
+            <div class="evolution-item reveal"><span>V8</span><h3>Planning</h3><p>The research problem was separated into planning first, execution second.</p></div>
+            <div class="evolution-item reveal"><span>V9</span><h3>Production-style engineering</h3><p>Modular architecture, structured outputs, logging, error handling, tests, and evidence guardrails.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
 
+    <section class="section">
+      <div class="container">
+        <div class="section-heading reveal">
+          <div class="section-index"><span>05</span><p>ENGINEERING QUALITY</p></div>
+          <h2>It should fail clearly, not mysteriously.</h2>
+          <p>The final version includes safeguards around inputs, model output, API errors, research behavior, and automated verification.</p>
+        </div>
+
+        <div class="quality-grid">
+          <article class="quality-card reveal"><span>STRUCTURED OUTPUT</span><strong>Pydantic</strong><p>Planner output is validated before the researcher consumes it.</p></article>
+          <article class="quality-card reveal"><span>OBSERVABILITY</span><strong>Logging</strong><p>Important workflow stages and expected failures are visible in the CLI.</p></article>
+          <article class="quality-card reveal"><span>ERROR HANDLING</span><strong>Targeted exceptions</strong><p>Authentication, rate limits, timeouts, connectivity, and bad requests are handled separately.</p></article>
+          <article class="quality-card reveal"><span>RESEARCH QUALITY</span><strong>Evidence guardrails</strong><p>Primary and authoritative sources are preferred over weaker secondary sources.</p></article>
+          <article class="quality-card reveal"><span>TESTING</span><strong>Mocked dependencies</strong><p>Core components are tested without spending API credits on live calls.</p></article>
+          <article class="quality-card reveal"><span>ARCHITECTURE</span><strong>Separation of concerns</strong><p>Planner, researcher, prompts, models, config, and orchestration remain independent.</p></article>
+        </div>
+
+        <div class="test-band reveal">
+          <div class="test-band-top">
+            <div><span>AUTOMATED TESTS</span><strong>12 / 12</strong></div>
+            <p>Planner · Researcher · Models · Orchestration · Validation · Web Search</p>
+          </div>
+          <div class="test-code">python -m pytest -v
+12 passed</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section lessons-section">
+      <div class="container editorial-grid">
+        <div class="section-index reveal"><span>06</span><p>LESSONS</p></div>
+        <div>
+          <h2 class="case-section-title reveal">The useful lessons were mostly <em>between the features.</em></h2>
+          <div class="learning-grid">
+            <div class="editorial-block reveal"><span>01</span><h3>Tool calling is only a request.</h3><p>The application still has to execute the tool, return the result, and let the model continue.</p></div>
+            <div class="editorial-block reveal"><span>02</span><h3>State matters in an agent loop.</h3><p>Losing context can make an agent repeat the same action even when the tool already succeeded.</p></div>
+            <div class="editorial-block reveal"><span>03</span><h3>LLM output becomes safer when software can validate it.</h3><p>Structured schemas reduce ambiguity between AI components.</p></div>
+            <div class="editorial-block reveal"><span>04</span><h3>More research is not automatically better research.</h3><p>Source quality, stopping criteria, and response depth matter just as much as search volume.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section case-cta">
+      <div class="container reveal">
+        <p class="case-index">07 / SOURCE CODE</p>
+        <h2>OPEN THE <span>BUILD.</span></h2>
+        <p>The repository contains the final modular application, tests, learning versions, prompts, schemas, logging, and the full progression from early experiments to the completed Research Agent.</p>
+        <div class="case-actions">
+          <a class="motion-btn" href="https://github.com/saquib-builds/ai-research-agent" target="_blank" rel="noopener noreferrer"><span>View repository ↗</span></a>
+          <a class="motion-btn" href="../index.html#work"><span>Back to portfolio</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="case-footer">
+    <div class="container footer-row">
+      <p>© <span id="year"></span> Mohammad Saquib Khan</p>
+      <p>Case study / AI Research Agent</p>
+    </div>
+  </footer>
+
+  <script src="../script.js"></script>
 </body>
-
 </html>
