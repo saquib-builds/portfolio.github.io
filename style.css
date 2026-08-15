@@ -246,6 +246,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 }
 
 .scroll-cue {
+    margin-top: 32px;
   align-self: flex-start;
   display: flex;
   align-items: center;
@@ -1785,6 +1786,18 @@ and
     opacity: 1 !important;
 
     transform: none !important;
+  }
+
+}
+@media (max-width: 720px) {
+
+  .hero-inner {
+    min-height: auto;
+    padding-bottom: 24px;
+  }
+
+  .scroll-cue {
+    margin-top: 12px;
   }
 
 }
